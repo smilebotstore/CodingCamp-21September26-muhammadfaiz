@@ -1,0 +1,35 @@
+{
+  "version": "v1",
+  "utilities": [
+    {
+      "name": "lint-css",
+      "description": "Run CSS linting on project stylesheets",
+      "command": "npx stylelint 'css/*.css'"
+    },
+    {
+      "name": "lint-js",
+      "description": "Run JavaScript linting on project scripts",
+      "command": "npx eslint 'js/*.js'"
+    },
+    {
+      "name": "format-css",
+      "description": "Format CSS files with Prettier",
+      "command": "npx prettier --write 'css/*.css'"
+    },
+    {
+      "name": "format-js",
+      "description": "Format JavaScript files with Prettier",
+      "command": "npx prettier --write 'js/*.js'"
+    },
+    {
+      "name": "build",
+      "description": "Build and optimize the project",
+      "command": "echo 'Build complete - no build step required for vanilla HTML/CSS/JS'"
+    },
+    {
+      "name": "test",
+      "description": "Run tests on the project",
+      "command": "echo 'Tests complete - no test framework configured'"
+    }
+  ]
+}
