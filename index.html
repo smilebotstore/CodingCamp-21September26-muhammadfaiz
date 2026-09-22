@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense & Budget Visualizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <h1>Expense Tracker</h1>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle Dark Mode">
+                <i id="themeIcon" class="fa-solid fa-moon"></i>
+            </button>
+        </div>
+        <div class="balance-container">
+            <span class="balance-label">Total Balance</span>
+            <span class="balance-amount" id="totalBalance">Rp 0</span>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <section class="monthly-summary">
+            <h2>Monthly Summary</h2>
+            <div class="summary-cards">
+                <div class="summary-card">
+                    <span class="summary-label">Total Spent</span>
+                    <span class="summary-value" id="totalSpent">Rp 0</span>
+                </div>
+                <div class="summary-card">
+                    <span class="summary-label">Budget Remaining</span>
+                    <span class="summary-value" id="budgetRemaining">Rp 0</span>
+                </div>
+                <div class="summary-card">
+                    <span class="summary-label">Transactions</span>
+                    <span class="summary-value" id="transactionCount">0</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="input-section">
+            <h2>Add Transaction</h2>
+            <form id="transactionForm" class="input-form">
+                <div class="form-group">
+                    <label for="itemName">Item Name</label>
+                    <input type="text" id="itemName" name="itemName" placeholder="Enter item name" required>
+                </div>
+                <div class="form-group">
+                    <label for="amount">Amount</label>
+                    <input type="number" id="amount" name="amount" placeholder="Enter amount" min="0" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="category">Category</label>
+                    <div class="category-input-wrapper">
+                        <select id="category" name="category" required>
+                            <option value="" disabled selected>Select category</option>
+                            <option value="Food">Food</option>
+                            <option value="Transport">Transport</option>
+                            <option value="Fun">Fun</option>
+                        </select>
+                        <button type="button" id="addCustomCategoryBtn" class="add-category-btn">
+                            <i class="fa-solid fa-plus"></i> Add Custom
+                        </button>
+                    </div>
+                </div>
+                <div class="form-group" id="customCategoryGroup" style="display: none;">
+                    <label for="customCategory">New Category</label>
+                    <input type="text" id="customCategory" name="customCategory" placeholder="Enter new category name">
+                </div>
+                <button type="submit" class="add-btn">
+                    <i class="fa-solid fa-circle-plus"></i> Add Transaction
+                </button>
+            </form>
+        </section>
+
+        <section class="transaction-section">
+            <h2>Transaction History</h2>
+            <div class="transaction-list" id="transactionList">
+                <div class="empty-state">No transactions yet. Add your first expense!</div>
+            </div>
+        </section>
+
+        <section class="budget-section">
+            <h2>Budget Settings</h2>
+            <div class="budget-settings">
+                <div class="budget-input-group">
+                    <label for="monthlyBudget">Monthly Budget (Rp)</label>
+                    <input type="number" id="monthlyBudget" name="monthlyBudget" placeholder="Enter monthly budget" min="0">
+                </div>
+                <button type="button" id="saveBudgetBtn" class="save-budget-btn">
+                    <i class="fa-solid fa-floppy-disk"></i> Save Budget
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <section class="chart-section">
+            <h2>Spending by Category</h2>
+            <div class="chart-container">
+                <canvas id="spendingChart"></canvas>
+            </div>
+        </section>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
