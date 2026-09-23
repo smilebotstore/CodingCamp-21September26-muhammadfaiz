@@ -98,10 +98,12 @@ function updateThemeIcon(theme) {
 function toggleCustomCategoryInput() {
     if (customCategoryGroup.style.display === 'none') {
         customCategoryGroup.style.display = 'flex';
+        customCategoryInput.focus();
         addCustomCategoryBtn.innerHTML = '<i class="fa-solid fa-check"></i> Done';
     } else {
         addCustomCategoryBtn.innerHTML = '<i class="fa-solid fa-plus"></i> Add Custom';
         customCategoryGroup.style.display = 'none';
+        customCategoryInput.value = '';
     }
 }
 
@@ -149,12 +151,23 @@ function addCategory(category) {
 
     if (!exists) {
         categories.push(category);
-        populateCategoryDropdown();
+        
+        // Add new option to existing dropdown
+        const option = document.createElement('option');
+        option.value = category;
+        option.textContent = category;
+        categorySelect.appendChild(option);
+        
+        // Select the new category
+        categorySelect.value = category;
+        
         saveData();
     }
 }
 
 function populateCategoryDropdown() {
+    const currentSelection = categorySelect.value;
+    
     categorySelect.innerHTML = '<option value="" disabled selected>Select category</option>';
 
     categories.forEach(category => {
@@ -163,6 +176,13 @@ function populateCategoryDropdown() {
         option.textContent = category;
         categorySelect.appendChild(option);
     });
+    
+    // Restore selection if it exists, or select the first option
+    if (currentSelection && categories.includes(currentSelection)) {
+        categorySelect.value = currentSelection;
+    } else if (categories.length > 0) {
+        categorySelect.value = categories[0];
+    }
 }
 
 function deleteTransaction(id) {

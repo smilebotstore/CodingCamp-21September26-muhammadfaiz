@@ -337,11 +337,7 @@ body {
     gap: 1rem;
 }
 
-.budget-input-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
+
 
 .save-budget-btn {
     background-color: var(--primary-color);
