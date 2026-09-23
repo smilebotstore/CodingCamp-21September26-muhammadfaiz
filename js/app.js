@@ -45,7 +45,7 @@ function loadData() {
 
     if (savedCategories) {
         categories = JSON.parse(savedCategories);
-        populateCategoryDropdown();
+        updateCategorySelect();
     }
 
     if (savedBudget) {
@@ -68,9 +68,68 @@ function saveData() {
 // Event Listeners
 function setupEventListeners() {
     themeToggle.addEventListener('click', toggleTheme);
-    addCustomCategoryBtn.addEventListener('click', toggleCustomCategoryInput);
+    
+    // Toggle custom category input AND handle adding category when Done is clicked
+    addCustomCategoryBtn.addEventListener('click', function(e) {
+        if (customCategoryGroup.style.display === 'none') {
+            // Show custom category input
+            customCategoryGroup.style.display = 'flex';
+            customCategoryInput.focus();
+            addCustomCategoryBtn.innerHTML = '<i class="fa-solid fa-check"></i> Done';
+            
+            // Store original onclick to restore later
+            customCategoryInput.dataset.originalOnclick = '';
+            
+            // Add event listener for Enter key
+            customCategoryInput.onkeydown = function(event) {
+                if (event.key === 'Enter') {
+                    const category = customCategoryInput.value.trim();
+                    if (category) {
+                        addCategory(category);
+                        customCategoryInput.value = '';
+                        customCategoryGroup.style.display = 'none';
+                        addCustomCategoryBtn.innerHTML = '<i class="fa-solid fa-plus"></i> Add Custom';
+                        categorySelect.focus();
+                    }
+                }
+            };
+        } else {
+            // Check if there's a value in the input and add it
+            if (customCategoryInput.value.trim()) {
+                addCategory(customCategoryInput.value.trim());
+                customCategoryInput.value = '';
+                customCategoryGroup.style.display = 'none';
+                addCustomCategoryBtn.innerHTML = '<i class="fa-solid fa-plus"></i> Add Custom';
+                categorySelect.focus();
+            } else {
+                // Just hide the input
+                customCategoryGroup.style.display = 'none';
+                addCustomCategoryBtn.innerHTML = '<i class="fa-solid fa-plus"></i> Add Custom';
+            }
+        }
+    });
+    
     transactionForm.addEventListener('submit', handleTransactionSubmit);
     saveBudgetBtn.addEventListener('click', handleBudgetSave);
+}
+
+// Helper function to update select element when categories change
+function updateCategorySelect() {
+    const currentSelection = categorySelect.value;
+    categorySelect.innerHTML = '<option value="" disabled selected>Select category</option>';
+    
+    categories.forEach(category => {
+        const option = document.createElement('option');
+        option.value = category;
+        option.textContent = category;
+        categorySelect.appendChild(option);
+    });
+    
+    if (currentSelection && categories.includes(currentSelection)) {
+        categorySelect.value = currentSelection;
+    } else if (categories.length > 0) {
+        categorySelect.value = categories[0];
+    }
 }
 
 // Theme Functions
@@ -94,18 +153,7 @@ function updateThemeIcon(theme) {
     themeIcon.className = theme === 'dark' ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
 }
 
-// Custom Category Functions
-function toggleCustomCategoryInput() {
-    if (customCategoryGroup.style.display === 'none') {
-        customCategoryGroup.style.display = 'flex';
-        customCategoryInput.focus();
-        addCustomCategoryBtn.innerHTML = '<i class="fa-solid fa-check"></i> Done';
-    } else {
-        addCustomCategoryBtn.innerHTML = '<i class="fa-solid fa-plus"></i> Add Custom';
-        customCategoryGroup.style.display = 'none';
-        customCategoryInput.value = '';
-    }
-}
+// Custom Category Functions - REMOVED - functionality moved to event listener
 
 // Transaction Functions
 function handleTransactionSubmit(e) {
@@ -119,6 +167,9 @@ function handleTransactionSubmit(e) {
     if (customCategoryGroup.style.display === 'flex' && customCategoryInput.value.trim()) {
         category = customCategoryInput.value.trim();
         addCategory(category);
+        customCategoryGroup.style.display = 'none';
+        addCustomCategoryBtn.innerHTML = '<i class="fa-solid fa-plus"></i> Add Custom';
+        customCategoryInput.value = '';
     }
 
     if (!name || isNaN(amount) || amount <= 0 || !category) {
@@ -151,39 +202,12 @@ function addCategory(category) {
 
     if (!exists) {
         categories.push(category);
-        
-        // Add new option to existing dropdown
-        const option = document.createElement('option');
-        option.value = category;
-        option.textContent = category;
-        categorySelect.appendChild(option);
-        
-        // Select the new category
-        categorySelect.value = category;
-        
+        updateCategorySelect();
         saveData();
     }
 }
 
-function populateCategoryDropdown() {
-    const currentSelection = categorySelect.value;
-    
-    categorySelect.innerHTML = '<option value="" disabled selected>Select category</option>';
 
-    categories.forEach(category => {
-        const option = document.createElement('option');
-        option.value = category;
-        option.textContent = category;
-        categorySelect.appendChild(option);
-    });
-    
-    // Restore selection if it exists, or select the first option
-    if (currentSelection && categories.includes(currentSelection)) {
-        categorySelect.value = currentSelection;
-    } else if (categories.length > 0) {
-        categorySelect.value = categories[0];
-    }
-}
 
 function deleteTransaction(id) {
     if (confirm('Are you sure you want to delete this transaction?')) {
